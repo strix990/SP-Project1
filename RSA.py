@@ -7,59 +7,68 @@ private_key = rsa.generate_private_key(public_exponent=65537, key_size=2048,) #G
 public_key = private_key.public_key() #Generates the Public key
 
 def Gen():
-    values = [0 for _ in range(7)]
+    values = [[0 for _ in range(100)] for _ in range(7)]
     for i in range(1,8,1):
-        values[i-1] = secrets.token_bytes(2**i)
+        for y in range(100):
+            values[i-1][y] = secrets.token_bytes(2**i)
     return values
 
 def Main():
     values = Gen()
-    for i in values:
-        list_encrypt = [0 for _ in range(10)]
-        mean_encrypt = 0
-        for x in range(10):
-            start = timeit.default_timer()
-            ciphertext = public_key.encrypt(
+    total_time = timeit.default_timer()
+    #Encryption
+    total_mean_encrypt = [0 for _ in range(7)]
+    for i in range(7):
+        for x in range(100):
+            mean_encrypt = 0
+            for y in range(10):
+                start = timeit.default_timer()
+                ciphertext = public_key.encrypt(
 
-                i,
+                    values[i][x],
 
-                padding.OAEP(
+                    padding.OAEP(
 
-                    mgf=padding.MGF1(algorithm=hashes.SHA256()),
+                        mgf=padding.MGF1(algorithm=hashes.SHA256()),
 
-                    algorithm=hashes.SHA256(),
+                        algorithm=hashes.SHA256(),
 
-                    label=None
-            ))
-            list_encrypt[x] = timeit.default_timer() - start
-            mean_encrypt += list_encrypt[x]
-        mean_encrypt = mean_encrypt/10
-        encrypt_string = "{:.10f}".format(mean_encrypt)
-        print("Mean time of encryption for 10 instances of a " + str(len(i)) + " bytes file: " + encrypt_string)
-        list_decrypt = [0 for _ in range(10)]
-        mean_decrypt = 0
-        for y in range(10):
-            start = timeit.default_timer()
-            plaintext = private_key.decrypt(
-
-                ciphertext,
-
-                padding.OAEP(
-
-                    mgf=padding.MGF1(algorithm=hashes.SHA256()),
-
-                    algorithm=hashes.SHA256(),
-
-                    label=None
-
+                        label=None
                 ))
-            list_decrypt[y] = timeit.default_timer() - start
-            mean_decrypt += list_decrypt[y]
-        mean_decrypt = mean_decrypt/10
-        decrypt_string = "{:.10f}".format(mean_decrypt)
-        print("Mean time of decryption for 10 instances of a " + str(len(i)) + " bytes file: " + decrypt_string)
-        if(i != plaintext):
-            print("error")
-            return
+                mean_encrypt += timeit.default_timer() - start
+            total_mean_encrypt[i] += mean_encrypt/10
+            values[i][x] = ciphertext
+    #Decryption
+    total_mean_decrypt = [0 for _ in range(7)]
+    for i in range(7):
+        for x in range(100):
+            mean_decrypt = 0
+            for y in range(10):
+                start = timeit.default_timer()
+                plaintext = private_key.decrypt(
+
+                    values[i][x],
+
+                    padding.OAEP(
+
+                        mgf=padding.MGF1(algorithm=hashes.SHA256()),
+
+                        algorithm=hashes.SHA256(),
+
+                        label=None
+
+                    ))
+                mean_decrypt += timeit.default_timer() - start
+            total_mean_decrypt[i] += mean_decrypt/10
+    for y in range(7):#Prints to the stdout the total mean time of encryption for each file size
+        total_mean_encrypt[y] = total_mean_encrypt[y]/100
+        total_mean_string = "{:.10f}".format(total_mean_encrypt[y])   
+        print("Mean time of encryption for 100 different " + str(2**(y+1)) + " bytes files: " + total_mean_string)
+    print()
+    for y in range(7):#Prints to the stdout the total mean time of decryption for each file size
+        total_mean_decrypt[y] = total_mean_decrypt[y]/100
+        total_mean_string = "{:.10f}".format(total_mean_decrypt[y])   
+        print("Mean time of decryption for 100 different " + str(2**(y+1)) + " bytes files: " + total_mean_string)
+    print("Total time elapsed " + str(timeit.default_timer() - total_time))
         
 Main()
