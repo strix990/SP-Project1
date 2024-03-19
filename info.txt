@@ -1,0 +1,14 @@
+Lenovo Thinkpad T480s 14-inch (2018) - Core i5-8250U - 8GB - SSD 256 GB OS-Linux(Gnome)
+#AES 
+    Para o AES usei a mesma logica do RSA e somente modifiquei
+    o codigo para usar a AES para encriptografar e descriptografar
+    os textos
+#SHA-256
+    Para o SHA-256 criei uma lista com todos os tamanhos do exercicio repetidos um numero MAX(1000 por padrao)
+    de vezes aleatorias e rodei o algoritimo de encriptação 10 vezes, por texto, para obter a media de todos
+    os tempos de execução para todos tamanhos
+#RSA
+    Para o RSA criei uma lista com todos os tamanhos do exercicio repetidos um numero MAX(1000 por padrao)
+    de vezes aleatorias e rodei o algoritimo de encriptação 10 vezes, por texto, guardando o texto
+    criptografado em uma lista, logo apos fiz a mesma coisa com o algoritimo de descriptografação sobre
+    essa nova lista
