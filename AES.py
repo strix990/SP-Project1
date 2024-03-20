@@ -45,7 +45,7 @@ def Main():
     for y in range(7):#Prints to the stdout the total mean time for each file size
         total_mean_encrypt[y] = total_mean_encrypt[y]/MAX
         total_mean_string = "{:.10f}".format(total_mean_encrypt[y])   
-        print("Mean time for encryption of " + str(MAX) + " different " + str(len(data_list[y][0])) + " bytes files: " + total_mean_string)
+        print("Mean time for encryption of " + str(MAX) + " different " + str(8**(y+1)) + " bytes files: " + total_mean_string)
     print()
     for u in range(7):
         for i in range(MAX):
@@ -59,7 +59,7 @@ def Main():
     for y in range(7):#Prints to the stdout the total mean time for each file size
         total_mean_decrypt[y] = total_mean_decrypt[y]/MAX
         total_mean_string = "{:.10f}".format(total_mean_decrypt[y])   
-        print("Mean time for decryption of " + str(MAX) + " different " + str(len(data_list[y][0])) + " bytes files: " + total_mean_string)
+        print("Mean time for decryption of " + str(MAX) + " different " + str(8**(y+1)) + " bytes files: " + total_mean_string)
     x = [8,64,512,4096,32768,262144,2097152] #valor pro plot
     imp = Take_imp()
     if(imp == 1):
